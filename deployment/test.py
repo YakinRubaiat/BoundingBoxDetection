@@ -1,3 +1,5 @@
+# Model path https://drive.google.com/drive/folders/1XSD11wDsW7MAOFXBq7FAR3oUZ957_vDy?usp=sharing
+
 model1_path = './models/resnet50_csv_22.h5'
 model1 = models.load_model(model1_path, backbone_name='resnet50', convert=True, nms=False)
 
