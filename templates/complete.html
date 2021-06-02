@@ -10,12 +10,29 @@
           margin-right: auto;
         }
     </style>
+    <script>
+        //function to confirm button
+        function confirmation() {
+          confirm("Are you Sure?");
+        }
+        </script>
 </head>
 <body>
 <img src=" {{url_for('send_image')}}" style="width:420px;height:420px;">
 <p></p>
 
-<center><font size="6">You have {{ result }} percent probabilty to becoming pneumonia</font></center>>
+<center><font size="6">You have {{ result }} percent probabilty to becoming pneumonia</font></center>
+
+<div style=" display:flex; justify-content: center ; margin-top: 50pt; ">
+Doctor's Diagnosis:
+    <form  style="display:flex;justify-content: center; padding-left: 50pt;">
+    <input type="checkbox" id="pneumoniaCheck" name="pneumoniaCheck" value="Pneumonia">
+    <label for="pneumoniaCheck"> Pneumonia</label><br>
+    <input style="margin-left: 50pt;" type="submit" value="Confirm" onclick=confirmation()>
+  </form>
+</div>
+
+
 
 </body>
 </html>

@@ -16,6 +16,8 @@ from util import get_detection_from_file,draw,nms
 
 from keras_retinanet import models
 
+# from tensorflow import keras
+
 graph = tf.get_default_graph()
 
 class detectp:
