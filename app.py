@@ -7,23 +7,34 @@ global graph,model
 import gspread
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 ##graph = tf.get_default_graph()
 ##import detection
 
 # define the scope
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-
+#SERVICE_ACCOUNT_FILE="helloworld.json"
+#SCOPES=['https://www.googleapis.com/auth/spreadsheets']
 # add credentials to the account
+#creds = None
 creds = ServiceAccountCredentials.from_json_keyfile_name('helloworld.json', scope)
-
+#creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE,scopes=SCOPES)
 # authorize the clientsheet 
 client = gspread.authorize(creds)
-
+#SAMPLE_SPREADSHEET_ID='1yHu4XzDh3ZWZaDVSqdscWd5WhgtDnxoeQUlquXRWnqo'
+#service = build('sheets','v4',credentials=creds)
 
 # get the instance of the Spreadsheet
 sheet = client.open('PneumoniaDataCollection')
 # get the first sheet of the Spreadsheet
 sheet_instance = sheet.get_worksheet(0)
+#sheet=service.spreadsheets()
+
+
+
+
+
 
 
 result = 0
@@ -51,22 +62,31 @@ def index():
 def upload():
     paitentname = request.form.get("paitentname")
     print(paitentname)
-    paitentage = request.form.get("paitentage")
-    print(paitentage)
     gender = request.form.get("gender")
     print(gender)
-    imageid= request.form.get("imageid")
-    print(imageid)
+    paitentage = request.form.get("paitentage")
+    print(paitentage)
     clinicname=request.form.get("clinicname")
     print(clinicname)
+    imageid= request.form.get("imageid")
+    print(imageid)
+    type=request.form.get("type")
+    print(type)
+    date=request.form.get("date")
+    print(date)
+    doctorname=request.form.get("doctorname")
+    print(doctorname)
     
     
     # Image folder 
     target = os.path.join(APP_ROOT, 'images/')
     # target = os.path.join(APP_ROOT, 'static/')
+    targetReport = os.path.join(APP_ROOT,'report/')
     
     if not os.path.isdir(target):
             os.mkdir(target)
+    if not os.path.isdir(targetReport):
+            os.mkdir(targetReport)
 
     # print(request.files.getlist("file"))
 
@@ -75,11 +95,13 @@ def upload():
 
         print(file_name)
 
-        destination = "/".join([target, f'{file_name}.png'])
+        destination = "/".join([target, f'{file_name}.dcm'])
+        destinationReport = "/".join([targetReport, f'{file_name}.jpg'])
         
         upload.save(destination)
+        upload.save(destinationReport)
     
-    elements=[file_name,paitentname,paitentage,gender,imageid,clinicname]
+    elements=[[file_name,paitentname,gender,paitentage,clinicname,imageid,type,date,doctorname]]
     data=pd.DataFrame.from_dict(elements)
     # get all the records of the data
     #records_data = sheet_instance.get_all_records()
@@ -88,12 +110,14 @@ def upload():
 
     # view the top records
     #recordhead=records_df.head()
-
-    sheet_instance.insert_cols(data.values.tolist())
+    #result=sheet.values().update(spreadsheetId=SAMPLE_SPREADSHEET_ID,range="PneumoniaDataCollection!A12",valueInputOption="RAW",body={"values":elements}).execute()
+    #sheet_instance.insert_cols(data.values.tolist())
+    sheet_instance.append_rows(data.values.tolist())
     ##result = ml.detect(destination)
     
 
     return render_template("complete.html",result=round(result*100,3))
+
 
 @app.route("/upload")
 def send_image():

@@ -1,58 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
   <head>
-    <title>Pnumonia Detection</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title> Pnumonia Detection </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" type="text/css">
-    <link href="/static/style.css" rel="stylesheet" type="text/css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <!--<link rel="stylesheet" href="style.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
     <meta name="google-site-verification" content="ruPP7Z-1iMcsvrbicR-wNJ79VHatSn1JepKnsDgSDlw" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-  </head>
-  <body>
-    <h1>Pnumonia Detection</h1>
-    <div id="target" style="display:flex; justify-content: center ; margin-top: 25pt; " id="home" role="tabpanel" aria-labelledby="home-tab">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+  <div>
+    <input type="checkbox" id="show">
+        <label for="show" class="show-btn">Doctor</label>
+  <div class="container">
+    <label for="show" class="close-btn fas fa-times"></label>
     <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" name="google-sheet">
-        <label for="paitentname">Paitent Name*</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input id="paitentname" type="text" name="paitentname" placeholder="Paitent Full Name" class="form-control" required>
+    <div class="content">
+      <div class="left-side">
+        <div class="address details">
+      <div>
+        <input id="file-picker" type="file"  accept="*/dicom,.dcm, image/dcm, */dcm, .dicom" name="file" capture="camera" class="form-control"  onchange="loadFile(event)" hidden/>
+        <label id="file-picker" for="file-picker">Choose X-Ray</label>
+        <img id="output" width="200" />
+      </div>
         <br>
-        <br>
-        <label for="paitentage">Paitent Age</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input id="paitentage" type="number" name="paitentage" placeholder="Paitent Age" class="form-control">
-        <br>
-        <br>
-        <label for="gender">Gender</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <select id="gender" name="gender" class="form-control">
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-        <br>
-        <br>
-        <label for="imageid">X-Ray Image ID*</label>
-        <input id="imageid" type="text" name="imageid" placeholder="X-Ray Image ID" class="form-control" required>
-        <br>
-        <br>
-        <label for="clinicname">Clinic Name*</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input id="clinicname" type="text" name="clinicname" placeholder="Clinic Name" class="form-control" required>
-        <br>
-        <br>
-        <input id="file-picker" type="file" accept="image/*" name="file" capture="camera" class="form-control" required>
-        <input type="submit" value="Upload!">
-    </form>
+      <div>
+        <input id="file-picker1" type="file"  accept="image/*" name="file" capture="camera" class="form-control"  onchange="loadReportFile(event)" hidden/>
+        <label id="file-picker1" for="file-picker1">Choose Report Image</label>
+        <img id="output1" width="200" />
+      </div>
+        <script>
+            var loadFile = function(event) {
+	          var image = document.getElementById('output');
+	          image.src = URL.createObjectURL(event.target.files[0]);
+            };
+            var loadReportFile = function(event) {
+	          var image = document.getElementById('output1');
+	          image.src = URL.createObjectURL(event.target.files[0]);
+            };
+        </script>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="topic-text">Pnumonia Detection</div>
+        <div class="input-box">
+          <input id="paitentname" type="text" name="paitentname" placeholder="Enter paitent name" class="form-control" required>
+        </div>
+        <div>
+          <input type="radio" id="male" name="gender" value="male" class="form-control">
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female" class="form-control">
+            <label for="female">Female</label>
+        </div>
+        <div class="input-box">
+          <input id="paitentage" type="number" name="paitentage" placeholder="Enter paitent age" class="form-control">
+        </div>
+        <div class="input-box">
+          <input id="clinicname" type="text" name="clinicname" placeholder="Enter clinic name" class="form-control" required>
+        </div>
+        <div class="input-box">
+          <input id="imageid" type="text" name="imageid" placeholder="Enter clinic given ID" class="form-control" required>
+        </div>
+        <select name="type" id="type" class="input-box">
+          <option value="Undiagnosed" selected>Not Diagnosed</option>
+          <option value="normalpnumonia">Normal Pnumonia</option>
+          <option value="covid19">Covid 19</option>
+      </select>
+        <div class="input-box">
+          <input id="date" type="date" name="date" class="form-control" required>
+        </div>
+        <div class="input-box">
+          <input id="doctorname" type="text" name="doctorname" placeholder="Enter Refered Doctor name" class="form-control" required>
+        </div>
+        <div class="button">
+          <input type="submit" value="Upload!" >
+        </div>
+      </form>
     </div>
-    <!-- <script>
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzDPrXHc_KgHb9ihDqtnifFLhbNJS2jitlJ0OaIbE4o9i4rhZfxOYKrYsQnwC8byar2Ow/exec'
-      const form = document.forms['google-sheet']
-    
-      form.addEventListener('submit', e => {
-        e.preventDefault()
-        fetch(scriptURL)
-      })
-    </script> -->
-
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
-  </body>
+    </div>
+  </div>
+  <div>
+        <input type="checkbox" id="show1">
+        <label for="show1" class="show-btn1">Lab Technician</label>
+  <div class="container">
+    <label for="show1" class="close-btn1 fas fa-times"></label>
+    <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" name="google-sheet">
+    <div class="content">
+      <div class="left-side">
+        <div class="address details">
+      <div>
+        <input id="file-picker" type="file"  accept="*/dicom,.dcm, image/dcm, */dcm, .dicom" name="file" capture="camera" class="form-control"  onchange="loadFile(event)" hidden/>
+        <label id="file-picker" for="file-picker">Choose X-Ray</label>
+        <img id="output" width="200" />
+      </div>
+        <br>
+      <div>
+        <input id="file-picker1" type="file"  accept="image/*" name="file" capture="camera" class="form-control"  onchange="loadReportFile(event)" hidden/>
+        <label id="file-picker1" for="file-picker1">Choose Report Image</label>
+        <img id="output1" width="200" />
+      </div>
+        <script>
+            var loadFile = function(event) {
+	          var image = document.getElementById('output');
+	          image.src = URL.createObjectURL(event.target.files[0]);
+            };
+            var loadReportFile = function(event) {
+	          var image = document.getElementById('output1');
+	          image.src = URL.createObjectURL(event.target.files[0]);
+            };
+        </script>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="topic-text">Pnumonia Detection</div>
+        <div class="input-box">
+          <input id="paitentname" type="text" name="paitentname" placeholder="Enter paitent name" class="form-control" required>
+        </div>
+        <div>
+          <input type="radio" id="male" name="gender" value="male" class="form-control">
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female" class="form-control">
+            <label for="female">Female</label>
+        </div>
+        <div class="input-box">
+          <input id="paitentage" type="number" name="paitentage" placeholder="Enter paitent age" class="form-control">
+        </div>
+        <div class="input-box">
+          <input id="clinicname" type="text" name="clinicname" placeholder="Enter clinic name" class="form-control" required>
+        </div>
+        <div class="input-box">
+          <input id="imageid" type="text" name="imageid" placeholder="Enter clinic given ID" class="form-control" required>
+        </div>
+        <select name="type" id="type" class="input-box">
+          <option value="Undiagnosed" selected>Not Diagnosed</option>
+          <option value="normalpnumonia">Normal Pnumonia</option>
+          <option value="covid19">Covid 19</option>
+      </select>
+        <div class="input-box">
+          <input id="date" type="date" name="date" class="form-control" required>
+        </div>
+        <div class="input-box">
+          <input id="doctorname" type="text" name="doctorname" placeholder="Enter Refered Doctor name" class="form-control" required>
+        </div>
+        <div class="button">
+          <input type="submit" value="Upload!" >
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>
